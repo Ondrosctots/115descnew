@@ -64,13 +64,13 @@ class ReverbManager:
         return res.status_code in [200, 201, 204]
 
 # --- Streamlit Layout ---
-st.set_page_config(page_title="Reverb Manager", layout="wide")
+st.set_page_config(page_title="🔑", layout="wide")
 
 # 1. API Token Check
 if "token" not in st.session_state:
     st.title("🔑")
     token_input = st.text_input("🔑:", type="password")
-    if st.button("Connect"):
+    if st.button("✅"):
         if token_input:
             st.session_state.token = token_input
             st.rerun()
@@ -156,4 +156,4 @@ with tab2:
                             time.sleep(1)
                             st.rerun()
                         else:
-                            st.error("Error publishing.")
+                            st.error("Error.")
