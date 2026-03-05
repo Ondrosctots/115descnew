@@ -68,8 +68,8 @@ st.set_page_config(page_title="Reverb Manager", layout="wide")
 
 # 1. API Token Check
 if "token" not in st.session_state:
-    st.title("🔑 Reverb Access")
-    token_input = st.text_input("Enter API Token:", type="password")
+    st.title("🔑")
+    token_input = st.text_input("🔑:", type="password")
     if st.button("Connect"):
         if token_input:
             st.session_state.token = token_input
@@ -82,35 +82,35 @@ api = ReverbManager(st.session_state.token)
 # 2. GLOBAL REFRESH BUTTON
 col_title, col_refresh = st.columns([0.85, 0.15])
 with col_title:
-    st.title("🎸 Reverb Bulk Tool")
+    st.title("🎸")
 with col_refresh:
-    if st.button("🔄 Refresh", use_container_width=True):
+    if st.button("🔄", use_container_width=True):
         st.rerun()
 
 st.divider()
 
 # 3. TABS
-tab1, tab2 = st.tabs(["🆕 Bulk Clone", "📋 Manage Drafts"])
+tab1, tab2 = st.tabs(["🆕", "📋"])
 
 # --- TAB 1: CLONING ---
 with tab1:
-    st.header("Bulk Clone at 60% Off")
+    st.header("-15")
     
     col_left, col_right = st.columns(2)
     
     with col_left:
-        urls_input = st.text_area("Paste URLs (one per line or comma-separated)", height=200)
-        ship_id = st.text_input("Shipping Profile ID")
+        urls_input = st.text_area(",..,...)", height=200)
+        ship_id = st.text_input("SP ID")
     
     with col_right:
         # NEW: Custom Description Input Field
-        custom_desc_input = st.text_area("Custom Description (will be applied to all listings)", 
+        custom_desc_input = st.text_area("Custom Desc", 
                                         height=200, 
-                                        placeholder="Enter the text you want to appear on all new drafts...")
+                                        placeholder="desc")
     
-    if st.button("🚀 Start Bulk Process"):
+    if st.button("🚀"):
         if not urls_input or not ship_id or not custom_desc_input:
-            st.warning("Please provide URLs, Shipping Profile ID, and a Custom Description.")
+            st.warning("error.")
         else:
             urls = [u.strip() for u in urls_input.replace("\n", ",").split(",") if u.strip()]
             progress = st.progress(0)
@@ -132,15 +132,15 @@ with tab1:
                 time.sleep(1) # Reverb API friendly delay
                 progress.progress((i + 1) / len(urls))
             
-            st.success("Batch Complete! Refresh the Manage tab to see them.")
+            st.success("Complete!")
 
 # --- TAB 2: MANAGEMENT ---
 with tab2:
-    st.header("Drafts Ready to Publish")
+    st.header("Ready")
     drafts = api.get_drafts()
     
     if not drafts:
-        st.info("No drafts found on your account.")
+        st.info("None.")
     else:
         for d in drafts:
             with st.container(border=True):
@@ -150,7 +150,7 @@ with tab2:
                     price_info = d.get('price', {})
                     st.caption(f"Price: {price_info.get('amount')} {price_info.get('currency')} | ID: {d.get('id')}")
                 with c2:
-                    if st.button("🚀 Publish", key=f"p_{d['id']}", use_container_width=True):
+                    if st.button("🚀", key=f"p_{d['id']}", use_container_width=True):
                         if api.publish(d['id']):
                             st.success(f"Live!")
                             time.sleep(1)
